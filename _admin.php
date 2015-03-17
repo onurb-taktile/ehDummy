@@ -250,7 +250,8 @@ class adminEhDummy {
 		 */
 
 		public static function adminEventHandlerForm($post) {
-			$dummy = isset($post) && $post->dummy ? $post->dummy : false;
+			
+			$dummy = isset($post) && !isset($_REQUEST['from_id']) && $post->dummy ? $post->dummy : false;
 			?>
 		<div id="ehdummy">
 			<label class="classic">
