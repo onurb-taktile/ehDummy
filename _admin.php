@@ -1,9 +1,15 @@
 <?php
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/* -- BEGIN LICENSE BLOCK ----------------------------------
+ *
+ * This file is part of ehDummy, a plugin for Dotclear 2.
+ *
+ * Copyright(c) 2015 Onurb Teva <dev@taktile.fr>
+ *
+ * Licensed under the GPL version 2.0 license.
+ * A copy of this license is available in LICENSE file or at
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ *
+ * -- END LICENSE BLOCK ------------------------------------*/
 
 if (!defined('DC_CONTEXT_ADMIN')) {
 	return;
@@ -169,46 +175,35 @@ class adminEhDummy {
 			
 		}
 
-		# this behavior permits events list headers manipulation.
-		# the parameter is array('columns'=>&$colums). $columns is an array containing the html
-		# or when called from Minilist, the parameter is array('minicols'=>&$columns).
+		#  this behavior permits events list lines manipulation.
+		# the parameter is array('columns'=>&$colums) which is an array containing the html
 		# for the list header (<th> cells); You can insert or delete some but be careful
 		# to do the same in adminEventHandlerEventsListBody to get a coherent table.
-
-		public static function adminEventHandlerEventsListHeaders($args) {
-			foreach ($args as $v => $k) {
-				$$v = &$args[$v];
-			} #Recreates the byref args.
+		# When called from Minilist, the parameter $ismini is true
+		
+		public static function adminEventHandlerEventsListHeaders($args,$ismini=false) {
+			$columns=&$args['columns'];
 			$num = 3; //Insert a new column header @3rd position.
-			if (isset($columns))
-				$cols = &$columns;
-			
-				else$cols = &$minicols;
-			if (isset($minicols))
+			if ($ismini)
 				$num++;#Minilist adds a 'period' column so we increase $num
-
-			$cols = array_merge(array_slice($cols, 0, $num), array('<th>' . __('Dummy') . '</th>'), array_slice($cols, $num));
+			$columns = array_merge(array_slice($columns, 0, $num), array('<th>' . __('Dummy') . '</th>'), array_slice($columns, $num));
 		}
 
 		# this behavior permits events list lines manipulation.
-		# the parameter is array('columns'=>&$colums). $columns is an array containing the html
-		# or when called from Minilist, the parameter is array('minicols'=>&$columns).
-		# for the list line (<td> cells); You can insert or delete some but be careful
-		# to do the same in adminEventHandlerEventsListHeader to get a coherent table.
+		# the parameter is array('columns'=>&$colums) which is an array containing the html
+		# for the list header (<th> cells); You can insert or delete some but be careful
+		# to do the same in adminEventHandlerEventsListHeaders to get a coherent table.
+		# When called from Minilist, the parameter $ismini is true
 
-		public static function adminEventHandlerEventsListBody($args, $rs) {
+		public static function adminEventHandlerEventsListBody($rs,$args,$ismini=false) {
+			$columns=&$args['columns'];
 			foreach ($args as $v => $k) {
 				$$v = &$args[$v];
 			} #Recreates the byref args.
 			$num = 3; //Insert a new column header @3rd position.
-			if (isset($columns))
-				$cols = &$columns;
-			
-				else$cols = &$minicols;
-			if (isset($minicols))
+			if ($ismini)
 				$num++;#Minilist adds a 'period' column so we increase $num
-
-			$cols = array_merge(array_slice($cols, 0, $num), array("<td>" . form::checkbox('dummy[' . $rs->post_id . ']', '1', (boolean) $rs->dummy, '', '', true) . "</td>"), array_slice($cols, $num));
+			$columns = array_merge(array_slice($columns, 0, $num), array("<td>" . form::checkbox('dummy[' . $rs->post_id . ']', '1', (boolean) $rs->dummy, '', '', true) . "</td>"), array_slice($columns, $num));
 		}
 
 		#this behavior is for action combo manipulation. 
